@@ -6,21 +6,15 @@ from OpenGL.GLU import *
 
 
 verticies = (
-    (0, 1, 1),
-    (-1, -1, 1),
-    (1,-1,1)
-    )
-
-edges = (
-    (0,1),
-    (0,2),
-    (1,2)
+    (0, 1, 0),
+    (-1, -1, 0),
+    (1,-1,0)
     )
 
 colors = (
-    (1,0,0),
-    (0,1,0),
-    (0,0,1)
+    (1,1,1),
+    (0,1,1),
+    (1,0,1)
     )
 
 surfaces = (
@@ -47,6 +41,8 @@ def main():
     glTranslatef(0.0,0.0, -5)
 
 
+    Triangle()
+    pygame.display.flip()
 
 
     while True:
@@ -54,9 +50,8 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        Triangle()
-        pygame.display.flip()
-        pygame.time.wait(10)
+        #glRotatef(1,1,3,1)
+        #glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        #pygame.time.wait(10)
 
 main()
