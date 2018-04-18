@@ -90,7 +90,7 @@ def Car():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glShadeModel(GL_SMOOTH)
     glBegin(GL_QUADS)
-    
+
     x = 0
 
     glColor3fv(colors[2]);
@@ -112,7 +112,7 @@ def Car():
 
     glEnd()
 
-    
+
 def main():
     pygame.init()
     display = (800,600)
@@ -141,9 +141,9 @@ def main():
                 if event.key == pygame.K_DOWN:
                     glRotatef(2, -1, 0, 0)
         #glRotatef(1,1,3,1)
-        #glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        #pygame.time.wait(10)
-        
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        pygame.time.wait(10)
+
         glDepthRange(0.0, 1.0)
 
         Car()
