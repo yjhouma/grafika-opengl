@@ -143,9 +143,9 @@ while True:
     glPushMatrix()
     glEnable(GL_LIGHTING)
     glLight(GL_LIGHT0, GL_POSITION,  (1, 1, 1,1))
-    glLightfv(GL_LIGHT0, GL_AMBIENT,  (0.9, 0.1, 0.1))
-    glLightfv(GL_LIGHT0, GL_DIFFUSE,  (0.9, 0.1, 0.1))
-    glLightfv(GL_LIGHT0, GL_SPECULAR, (0.9,0.1,.1));
+    glLightfv(GL_LIGHT0, GL_AMBIENT,  (5, 1, 1))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE,  (5, 1, 1))
+    glLightfv(GL_LIGHT0, GL_SPECULAR, (5, 1, 1));
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, (0,0,-1));
     glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 12.0);
     glEnable(GL_LIGHTING)
