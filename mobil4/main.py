@@ -3,31 +3,101 @@ import sys
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-vertices = (
+verticies = (
     # x  y  z
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
+    (-0.9, -0.9, 1),
+    (-0.6, -1, 1),
+    (-0.6, -0.8, 1),
+    (-0.3, -0.8, 1),
+    (-0.3, -1, 1),
+    (0.3, -1, 1),
+    (0.3, -0.8, 1),
+    (0.6, -0.8, 1),
+    (0.6, -1, 1),
     (1, -1, 1),
     (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
+    (0.1, 1, 1),
+    (-0.3, 0, 1),
+    (-1, -0.5, 1),
+
+    (-0.9, -0.9, -1),
+    (-0.6, -1, -1),
+    (-0.6, -0.8, -1),
+    (-0.3, -0.8, -1),
+    (-0.3, -1, -1),
+    (0.3, -1, -1),
+    (0.3, -0.8, -1),
+    (0.6, -0.8, -1),
+    (0.6, -1, -1),
+    (1, -1, -1),
+    (1, 1, -1),
+    (0.1, 1, -1),
+    (-0.3, 0, -1),
+    (-1, -0.5, -1),
+
+    (-0.6, -0.5, 1),
+    (-0.3, -0.5, 1),
+    (0.3, -0.5, 1),
+    (0.6, -0.5, 1),
+    (1, -0.5, 1),
+    (1, 0, 1),
+
+    (-0.6, -0.5, -1),
+    (-0.3, -0.5, -1),
+    (0.3, -0.5, -1),
+    (0.6, -0.5, -1),
+    (1, -0.5, -1),
+    (1, 0, -1),
 )
 
-edges = (
-    (0, 1),
-    (0, 3),
-    (0, 4),
-    (2, 1),
-    (2, 3),
-    (2, 7),
-    (6, 3),
-    (6, 4),
-    (6, 7),
-    (5, 1),
-    (5, 4),
-    (5, 7)
+# edges = (
+#     (0, 1),
+#     (0, 3),
+#     (0, 4),
+#     (2, 1),
+#     (2, 3),
+#     (2, 7),
+#     (6, 3),
+#     (6, 4),
+#     (6, 7),
+#     (5, 1),
+#     (5, 4),
+#     (5, 7)
+# )
+
+samping = (
+    (13,0,1,28),
+    (28,2,3,29),
+    (29,4,5,30),
+    (30,6,7,31),
+    (31,8,9,32),
+    (13,32,33,12),
+    (12,33,10,11),
+)
+
+samping2 = (
+    (27,14,15,34),
+    (34,16,17,35),
+    (35,18,19,36),
+    (36,20,21,37),
+    (37,22,23,38),
+    (27,38,39,26),
+    (26,39,24,25),
+)
+
+
+colors = (
+    (1,1,1),
+    (0,0,0),
+    (0.7,0.5,1)
+    )
+
+surfaces = (
+    (13,0,14,27),
+    (12,13,27,26),
+    (11,12,26,25),
+    (10,11,25,24),
+    (9,10,24,23),
 )
 
 
@@ -52,65 +122,29 @@ def loadTexture():
     return texid
 
 
-def draw_cube(lines=False):
-    if lines:
-        glBegin(GL_LINES)
-        for edge in edges:
-            glColor3fv((1, 1, 1))
-            for vertex in edge:
-                glVertex3fv(vertices[vertex])
-        glEnd()
-    else:
-        glBegin(GL_QUADS)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(-1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(1.0,  1.0,  1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(-1.0,  1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, -1.0, -1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, -1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(-1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(-1.0,  1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(1.0,  1.0,  1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(1.0,  1.0, -1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0, -1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0, -1.0, -1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(1.0, -1.0, -1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(1.0,  1.0, -1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(1.0,  1.0,  1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(1.0, -1.0,  1.0)
-        glTexCoord2f(0.0, 0.0)
-        glVertex3f(-1.0, -1.0, -1.0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(-1.0, -1.0,  1.0)
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(-1.0,  1.0,  1.0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(-1.0,  1.0, -1.0)
-        glEnd()
+def draw_cube():
+    glBegin(GL_QUADS)
+    
+    x = 0
+
+    glColor3fv(colors[2]);
+    for surface in surfaces:
+        for vertex in surface:
+            glVertex3fv(verticies[vertex])
+
+    glColor3fv(colors[0])
+    for surface in samping:
+        x+=1
+        for vertex in surface:
+            glVertex3fv(verticies[vertex])
+
+    glColor3fv(colors[0])
+    for surface in samping2:
+        x+=1
+        for vertex in surface:
+            glVertex3fv(verticies[vertex])
+
+    glEnd()
 
 pygame.init()
 display = (800, 600)
@@ -139,6 +173,6 @@ while True:
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    draw_cube(lines=False)
+    draw_cube()
 
     pygame.display.flip()
