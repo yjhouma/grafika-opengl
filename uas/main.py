@@ -1,116 +1,21 @@
-import pygame
-import math
+# Basic OBJ file viewer. needs objloader from:
+#  http://www.pygame.org/wiki/OBJFileLoader
+# LMB + move: rotate
+# RMB + move: pan
+# Scroll wheel: zoom in/out
+import sys, pygame, math
 from pygame.locals import *
-
+from pygame.constants import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from OpenGL.GLUT import *
+import random
+
+# IMPORT OBJECT LOADER
 
 angle = 0.0
 
-verticies = (
-    (0.2, 0.4,0.6,1),
-    (0.6, 0.5,0.6,1),
-    (0.6, 0.5,0.2,1),
-    (0.2,0.4,0.2,1),
-    (0.2,0.2,0.6,1),
-    (0.3, -1, 1,1),
-    (0.6,0.2,0.6,1),
-    (0.6,0.2,0.2,1),
-    (0.2,0.2,0.2,1),
-    (0.2,0.2,0.6,1),
-    (0.2, 0.4,0.6,1),
-    (0.2,0.4,0.2,1),
-    (0.2,0.2,0.2,1),
-    (0.6,0.2,0.6,1),
-
-    (0.6,0.5,0.6,1),
-    (0.6,0.5,0.2,1),
-    (0.6,0.2,0.2,1),
-    (0.2,0.2,0.6,1),
-    (0.6,0.2,0.6,1),
-    (0.6,0.5,0.6,1),
-    (0.2,0.4,0.6,1),
-    (0.2,0.2,0.2,1),
-    (0.6,0.2,0.2,1),
-    (0.6,0.5,0.2,1),
-    (0.2,0.4,0.2,1),
-    (0.7,0.65,0.6,1),
-    (0.7,0.65,0.2,1),
-    (1.7,0.65,0.2,1),
-
-    (1.7,0.65,0.6,1),
-    (1.8, 0.5,0.6,1),
-    (1.8, 0.5,0.2,1),
-    (2.1, 0.4, 0.2,1),
-    (2.1,0.4,0.6,1),
-    (2.1,0.2,0.6,1),
-
-    (2.1,0.2,0.2,1),
-    (-0.3, -0.5, -1,1),
-    (0.3, -0.5, -1,1),
-    (0.6, -0.5, -1,1),
-    (1, -0.5, -1,1),
-    (1, 0, -1,1),
-    )
-
-samping = (
-    (13,0,1,28),
-    (28,2,3,29),
-    (29,4,5,30),
-    (30,6,7,31),
-    (31,8,9,32),
-    (13,32,33,12),
-    (12,33,10,11),
-)
-
-samping2 = (
-    (27,14,15,34),
-    (34,16,17,35),
-    (35,18,19,36),
-    (36,20,21,37),
-    (37,22,23,38),
-    (27,38,39,26),
-    (26,39,24,25),
-)
-
-
-colors = (
-    (1,1,1),
-    (0,0,0),
-    (0.7,0.5,1)
-    )
-
-surfaces = (
-    (13,0,14,27),
-    (12,13,27,26),
-    (11,12,26,25),
-    (10,11,25,24),
-    (9,10,24,23),
-)
-
-def loadTexture():
-    textureSurface = pygame.image.load('a25.jpg')
-    textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-    width = textureSurface.get_width()
-    height = textureSurface.get_height()
-
-    glEnable(GL_TEXTURE_2D)
-    texid = glGenTextures(1)
-
-    glBindTexture(GL_TEXTURE_2D, texid)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-                 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-
-    return texid
-
 def Car():
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    # glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glShadeModel(GL_SMOOTH)
     glBegin(GL_QUADS)                
     
@@ -352,108 +257,147 @@ def Car():
     # glutPostRedisplay();
     # glutSwapBuffers();
 
-def compute_location(user_theta, user_height):
-    x = 2 * math.cos(user_theta)
-    y = 2 * math.sin(user_theta)
-    z = user_height
-    d = math.sqrt(x * x + y * y + z * z)
-
-    # Set matrix mode
-    glMatrixMode(GL_MODELVIEW)
-
-    # Reset matrix
-    glLoadIdentity()
-    glFrustum(-d * 0.5, d * 0.5, -d * 0.5, d * 0.5, d - 1.1, d + 1.1)
-
-    # Set camera
-    gluLookAt(x, y, z, 0, 0, 0, 0, 0, 1)
-
-def main():
+def mainMobil():
+    red = (255,255,255,255)
     pygame.init()
-    display = (800,600)
-    pygame.display.set_mode(display, pygame.DOUBLEBUF | pygame.OPENGL | pygame.OPENGLBLIT)  
+    viewport = (800,600)
+    hx = viewport[0]/2
+    hy = viewport[1]/2
+    srf = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
 
+    glLightfv(GL_LIGHT0, GL_POSITION,  (-40, 0, 0, 0.0))
+    glLightfv(GL_LIGHT0, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, (float(red[0]) / 256, float(red[1]) / 256, float(red[2]) / 256, 1.0))
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION,  (40, 0, 0, 0.0))
+    glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF,  10)
 
-    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
-    glTranslatef(-0.7,0.0, -4)
-
-    glRotatef(0,0,0,0)
-    glEnable(GL_DEPTH_TEST)
-    glDepthMask(GL_TRUE)
-    glDepthFunc(GL_LEQUAL)
-    # Radius of sphere
-    # radius = radius
-
-    # Number of latitudes in sphere
-    lats = 100
-
-    # Number of longitudes in sphere
-    longs = 100
-
-    user_theta = -2
-    user_height = 2
-
-    # Direction of light
-    direction = [0.2, 0.4,0.6, 0.6]
-
-    # Intensity of light
-    intensity = [1, 1, 1, 1.0]
-
-    # Intensity of ambient light
-    ambient_intensity = [0.5, 0.5, 0.5, 1.0]
-
-    # The surface type(Flat or Smooth)
-    surface = GL_FLAT
-
-    compute_location(user_theta, user_height)    
-
-    # Enable lighting
-    glEnable(GL_LIGHTING)
-
-    # Set light model
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_intensity)
-
-    # Enable light number 0
     glEnable(GL_LIGHT0)
 
-    # Set position and intensity of light
-    glLightfv(GL_LIGHT0, GL_POSITION, direction)
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, intensity)
-
-    # Setup the material
+    glEnable(GL_LIGHTING)
     glEnable(GL_COLOR_MATERIAL)
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
+    glEnable(GL_DEPTH_TEST)
+    glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
 
-    while True:        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    glRotatef(2, 0, -1, 0)
-                    user_theta -= 0.1
-                if event.key == pygame.K_RIGHT:
-                    glRotatef(2, 0 , 1, 0)
-                    user_theta += 0.1
-                if event.key == pygame.K_UP:
-                    glRotatef(2, 1, 0, 0)
-                    user_height += 0.1
-                if event.key == pygame.K_DOWN:
-                    glRotatef(2, -1, 0, 0)
-                    user_height -= 0.1
-        # glRotatef(3,0,1,0)
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        pygame.time.wait(10)
+    # LOAD OBJECT AFTER PYGAME INIT
+    # obj = OBJ(sys.argv[1], swapyz=True)
 
-        glDepthRange(0.0, 1.0)
+    clock = pygame.time.Clock()
 
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    width, height = viewport
+    gluPerspective(90.0, width/float(height), 1, 100.0)
+    glEnable(GL_DEPTH_TEST)
+    glMatrixMode(GL_MODELVIEW)
+
+
+    rx, ry = (0,0)
+    tx, ty = (0,0)
+    zpos = 5
+    rotate = move = False
+    # itera = 0
+    loopitera = 0
+    iteraList = []
+    iteraList.append(0) #dummy
+    # bagian hujan
+    hujanPoint = []
+    hujanIte = -1
+    rainspeed = float(red[3]) / 2550
+    knalpotspeed = float(255) / 127.5
+    while hujanIte < 1 :
+        hujanPoint.append([hujanIte, random.uniform(-1,1)])
+        hujanIte += 0.03
+    while 1:
+        clock.tick(30)
+        for e in pygame.event.get():
+            if e.type == QUIT:
+                sys.exit()
+            elif e.type == KEYDOWN and e.key == K_ESCAPE:
+                sys.exit()
+            elif e.type == MOUSEBUTTONDOWN:
+                if e.button == 4: zpos = max(1, zpos-1)
+                elif e.button == 5: zpos += 1
+                elif e.button == 1: rotate = True
+                elif e.button == 3: move = True
+            elif e.type == MOUSEBUTTONUP:
+                if e.button == 1: rotate = False
+                elif e.button == 3: move = False
+            elif e.type == MOUSEMOTION:
+                i, j = e.rel
+                if rotate:
+                    rx += i
+                    ry += j
+                if move:
+                    tx += i
+                    ty -= j
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+        for hujan in range(len(hujanPoint)):
+            glBegin(GL_QUADS)
+            glColor3f(255,255,255)
+            glVertex3f(hujanPoint[hujan][0] + 0.005  ,hujanPoint[hujan][1] + 0.05,-1)
+            glVertex3f(hujanPoint[hujan][0] + 0.005  ,hujanPoint[hujan][1],-1)
+            glVertex3f(hujanPoint[hujan][0]         ,hujanPoint[hujan][1],  -1)
+            glVertex3f(hujanPoint[hujan][0]         ,hujanPoint[hujan][1] + 0.05,-1)
+            glEnd()
+            hujanPoint[hujan][1] -= rainspeed
+            if hujanPoint[hujan][1] < -1:
+                hujanPoint[hujan][1] = 1
+        # RENDER OBJECT
+        glTranslate(tx/20., ty/20., - zpos)
+        glRotate(ry, 1, 0, 0)
+        glRotate(rx, 0, 1, 0)
         Car()
-        # user_theta -= 0.1
-        compute_location(user_theta, user_height)
+        #increase all itera number
+        for i in range(len(iteraList)):
+            iteraList[i] = iteraList[i] + 0.01
+        if (loopitera % 10) == 0:
+            if (loopitera > (250 * knalpotspeed)):
+                iteraList.pop(0)
+            iteraList.append(0)
+        
+        #add new number
+        # iteraList.append(0)
+        # print(len(iteraList))
+        for itera in iteraList:
+            # print itera
+            it = 0
+            while (it < 1):
+                glBegin(GL_TRIANGLES)
+                glVertex3fv((-0.1+it, 4.2+itera, -0.5))
+                glVertex3fv((-0.2+it, 4.2+itera, -0.5))
+                #   print loopitera
+                glVertex3fv((-0.15+it, 4.3+itera, -0.5))
+                glEnd()
+                glBegin(GL_TRIANGLES)
+                glVertex3fv((-0.1+it, 4.2+itera, -0.5))
+                glVertex3fv((-0.2+it, 4.2+itera, -0.5))
+                #   print loopitera
+                glVertex3fv((-0.15+it, 4.25+itera, -0.4))
+                glEnd()
+                glBegin(GL_TRIANGLES)
+                glVertex3fv((-0.1+it, 4.2+itera, -0.5))
+                glVertex3fv((-0.15+it, 4.25+itera, -0.4))
+                #   print loopitera
+                glVertex3fv((-0.15+it, 4.3+itera, -0.5))
+                glEnd()
+                glBegin(GL_TRIANGLES)
+                glVertex3fv((-0.15+it, 4.25+itera, -0.4))
+                glVertex3fv((-0.2+it, 4.2+itera, -0.5))
+                #   print loopitera
+                glVertex3fv((-0.15+it, 4.3+itera, -0.5))
+                glEnd()
+                it = it + 0.2
+        loopitera += knalpotspeed
+        if len(iteraList) == 100:
+            iteraList = []
+        # itera = itera + 0.01
+            
         pygame.display.flip()
 
-        pygame.time.wait(10)
 
 
-main()
+
+if __name__ == '__main__':
+    mainMobil()
