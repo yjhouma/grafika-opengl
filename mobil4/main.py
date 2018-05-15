@@ -152,7 +152,7 @@ while True:
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_LIGHT0)
-    draw_cube(lines=False)
+    draw_cube()
     glDisable(GL_LIGHTING)
     glPopMatrix()
     pygame.display.flip()
