@@ -39,7 +39,7 @@ class Particle():
             self.y-=random.uniform(0.2, 0.7)
 
         self.x+=random.uniform(0.1, 0.5)
-        self.z+=random.uniform(-0.1, 0.1)
+        # self.z+=random.uniform(-0.1, 0.1)
 
 class ParticleHujan():
     def __init__(self,startz):
