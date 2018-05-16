@@ -402,7 +402,7 @@ def main():
             draw_circle(p.x, p.y, 0.015, 100, True)
 
         pygame.display.flip()
-        print(-start+timeit.default_timer())
+        print(round(1/(-start+timeit.default_timer())))
 
 if __name__ == '__main__':
     main()
