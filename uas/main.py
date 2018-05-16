@@ -1,8 +1,3 @@
-# Basic OBJ file viewer. needs objloader from:
-#  http://www.pygame.org/wiki/OBJFileLoader
-# LMB + move: rotate
-# RMB + move: pan
-# Scroll wheel: zoom in/out
 import sys, pygame, math
 import timeit
 from pygame.locals import *
@@ -11,7 +6,6 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import random
 
-# IMPORT OBJECT LOADER
 class Particle():
     def __init__(self, startx, starty, startz, col):
         self.x = startx
@@ -306,45 +300,7 @@ def draw_circle(cx, cy, r, num_segments, filled):
 
     glEnd()
 
-def draw_cube(x, y, z):
-    sf = 0.05
-    rf = 1/sf
-
-    vertices= (
-        (sf, -sf, -sf),
-        (sf, sf, -sf),
-        (-sf, sf, -sf),
-        (-sf, -sf, -sf),
-        (sf, -sf, sf),
-        (sf, sf, sf),
-        (-sf, -sf, sf),
-        (-sf, sf, sf)
-        )
-
-    edges = (
-        (0,1),
-        (0,3),
-        (0,4),
-        (2,1),
-        (2,3),
-        (2,7),
-        (6,3),
-        (6,4),
-        (6,7),
-        (5,1),
-        (5,4),
-        (5,7)
-        )
-
-    glTranslatef(x, y, z)
-    glBegin(GL_LINES)
-    for edge in edges:
-        for vertex in edge:
-            glVertex3fv(vertices[vertex])
-    glEnd()
-    # glTranslatef(-x, -y, 0)
-
-def mainMobil():
+def main():
     red = (255,255,255,255)
     pygame.init()
     viewport = (800,600)
@@ -383,21 +339,16 @@ def mainMobil():
     tx, ty = (0,0)
     zpos = 5
     rotate = move = False
-    # itera = 0
-    loopitera = 0
-    iteraList = []
-    iteraList.append(0) #dummy
-    # bagian hujan
-    hujanPoint = []
-    hujanIte = -1
+
+    raindrops = []
+    raining = -1
     rainspeed = float(red[3]) / 2550
-    knalpotspeed = 120 / 127.5
-    while hujanIte < 1 :
-        hujanPoint.append([hujanIte, random.uniform(-1,1)])
-        hujanIte += 0.03
+    while raining < 1 :
+        raindrops.append([raining, random.uniform(-1,1)])
+        raining += 0.03
 
     smoke = []
-    for i in range(150):
+    for i in range(75):
         smoke.append(Particle(2.25,0.2,-10.3, (255,255,255)))
 
     while 1:
@@ -428,83 +379,30 @@ def mainMobil():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
 
-        for hujan in range(len(hujanPoint)):
+        for hujan in range(len(raindrops)):
             glBegin(GL_QUADS)
             glColor3f(255,255,255)
-            glVertex3f(hujanPoint[hujan][0] + 0.005  ,hujanPoint[hujan][1] + 0.05,-1)
-            glVertex3f(hujanPoint[hujan][0] + 0.005  ,hujanPoint[hujan][1],-1)
-            glVertex3f(hujanPoint[hujan][0]         ,hujanPoint[hujan][1],  -1)
-            glVertex3f(hujanPoint[hujan][0]         ,hujanPoint[hujan][1] + 0.05,-1)
+            glVertex3f(raindrops[hujan][0] + 0.005  ,raindrops[hujan][1] + 0.05,-1)
+            glVertex3f(raindrops[hujan][0] + 0.005  ,raindrops[hujan][1],-1)
+            glVertex3f(raindrops[hujan][0]         ,raindrops[hujan][1],  -1)
+            glVertex3f(raindrops[hujan][0]         ,raindrops[hujan][1] + 0.05,-1)
             glEnd()
-            hujanPoint[hujan][1] -= rainspeed
-            if hujanPoint[hujan][1] < -1:
-                hujanPoint[hujan][1] = 1
+            raindrops[hujan][1] -= rainspeed
+            if raindrops[hujan][1] < -1:
+                raindrops[hujan][1] = 1
         # RENDER OBJECT
         glTranslate(tx/20., ty/20., - zpos)
         glRotate(ry, 1, 0, 0)
         glRotate(rx, 0, 1, 0)
         Car()
-        #increase all itera number
-        # for i in range(len(iteraList)):
-        #     iteraList[i] = iteraList[i] + 0.01
-        # if (loopitera % 10) == 0:
-        #     if (loopitera > (250 * knalpotspeed)):
-        #         iteraList.pop(0)
-        #     iteraList.append(0)
-        
-        # #add new number
-        # # iteraList.append(0)
-        # # print(len(iteraList))
-        # for itera in iteraList:
-        #     # print itera
-        #     it = 0
-        #     glColor3f(255,255,255)
-        #     while (it < 1):
-        #         glBegin(GL_TRIANGLES)
-        #         glVertex3fv((-0.1+it, 4.2+itera, -0.5))
-        #         glVertex3fv((-0.2+it, 4.2+itera, -0.5))
-        #         #   print loopitera
-        #         glVertex3fv((-0.15+it, 4.3+itera, -0.5))
-        #         glEnd()
-        #         glBegin(GL_TRIANGLES)
-        #         glVertex3fv((-0.1+it, 4.2+itera, -0.5))
-        #         glVertex3fv((-0.2+it, 4.2+itera, -0.5))
-        #         #   print loopitera
-        #         glVertex3fv((-0.15+it, 4.25+itera, -0.4))
-        #         glEnd()
-        #         glBegin(GL_TRIANGLES)
-        #         glVertex3fv((-0.1+it, 4.2+itera, -0.5))
-        #         glVertex3fv((-0.15+it, 4.25+itera, -0.4))
-        #         #   print loopitera
-        #         glVertex3fv((-0.15+it, 4.3+itera, -0.5))
-        #         glEnd()
-        #         glBegin(GL_TRIANGLES)
-        #         glVertex3fv((-0.15+it, 4.25+itera, -0.4))
-        #         glVertex3fv((-0.2+it, 4.2+itera, -0.5))
-        #         #   print loopitera
-        #         glVertex3fv((-0.15+it, 4.3+itera, -0.5))
-        #         glEnd()
-        #         it = it + 0.2
-        # loopitera += knalpotspeed
-        # if len(iteraList) == 100:
-        #     iteraList = []
-        # # itera = itera + 0.01
 
         for p in smoke:
             p.move()
-        # glTranslate(p.x, p.y, - zpos)
-        # glBindBuffer (GL_ARRAY_BUFFER, vbo)
-        # glVertexPointer (3, GL_FLOAT, 0, None)
-        # glDrawArrays (GL_TRIANGLES, 0, 3)
             glColor3f(30,30,30)
             draw_circle(p.x, p.y, 0.015, 100, True)
-            # draw_cube(p.x, p.y, p.z)
 
         pygame.display.flip()
         print(-start+timeit.default_timer())
 
-
-
-
 if __name__ == '__main__':
-    mainMobil()
+    main()
